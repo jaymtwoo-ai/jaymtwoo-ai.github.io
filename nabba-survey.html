@@ -340,6 +340,7 @@
   </div>
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   <div id="stageRoot"></div>
+  <iframe name="gasFrame" id="gasFrame" style="display:none" title="submit"></iframe>
 </div>
 
 <script>
@@ -562,19 +563,36 @@
     record.consent = true;
     record.submittedAt = new Date().toISOString();
 
-    fetch(API_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(record)
-    }).then(function(){
-      step = 3 + questions.length + 1;
-      render();
-    }).catch(function(err){
-      console.error('Submit error', err);
-      if (btn) { btn.disabled = false; btn.innerText = '다시 시도'; }
-      alertInline('저장에 실패했어요. 다시 시도해주세요.');
-    });
+    // 폼 POST 방식 (모바일·카카오톡 브라우저에서 더 안정적)
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = API_URL;
+    form.target = 'gasFrame';
+    form.style.display = 'none';
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'payload';
+    input.value = JSON.stringify(record);
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+    var done = false;
+    function finish(ok) {
+      if (done) return;
+      done = true;
+      form.remove();
+      if (ok) {
+        step = 3 + questions.length + 1;
+        render();
+      } else {
+        if (btn) { btn.disabled = false; btn.innerText = '다시 시도'; }
+        alertInline('저장에 실패했어요. 다시 시도해주세요.');
+      }
+    }
+
+    document.getElementById('gasFrame').onload = function() { finish(true); };
+    setTimeout(function() { finish(true); }, 2500);
+    form.submit();
   }
 
   function alertInline(msg){
