@@ -277,6 +277,62 @@
     margin-top: 14px;
   }
 
+  .welcome-stage {
+    justify-content: flex-start;
+    padding-top: 12px;
+    padding-bottom: 28px;
+    overflow-y: auto;
+  }
+  .welcome-stage .welcome-badge {
+    margin-bottom: 20px;
+    aspect-ratio: 16/9;
+  }
+  .welcome-stage h1 {
+    font-size: 22px;
+    line-height: 1.42;
+    margin-bottom: 10px;
+  }
+  .welcome-stage .sub {
+    font-size: 13.5px;
+    margin-bottom: 16px;
+  }
+  .welcome-stage .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    line-height: 1.45;
+  }
+  .prize-list {
+    width: 100%;
+    text-align: left;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0 0 14px;
+    list-style: none;
+  }
+  .prize-list li {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--deep);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(228, 223, 211, 0.65);
+  }
+  .prize-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .prize-list .rank {
+    font-weight: 600;
+    color: var(--green);
+  }
+  .welcome-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0 0 16px;
+  }
+
   .done-icon {
     width: 64px; height: 64px;
     border-radius: 50%;
@@ -418,14 +474,20 @@
 
   function renderWelcome(){
     root.innerHTML =
-      '<div class="stage center-stage">' +
+      '<div class="stage center-stage welcome-stage">' +
         '<div class="welcome-badge">' +
           '<div class="welcome-word">WXM</div>' +
           '<div class="welcome-tag">We Design Wellness × Mechanism</div>' +
         '</div>' +
-        '<div class="eyebrow">나바코리아 2026 · 부산</div>' +
-        '<h1>나의 웰니스 취향은?</h1>' +
-        '<p class="sub">3분이면 끝나요. 답변해주시면 추첨을 통해<br>상품을 드려요 🎁</p>' +
+        '<div class="eyebrow">NABBA KOREA · 2026 Amateur Classic Busan</div>' +
+        '<h1>긴 시간을 버텨온<br>선수들의 무대를 응원해주세요</h1>' +
+        '<p class="sub">물 한 병과 함께, 웰니스 취향 3분 테스트도 가볍게 참여해보세요. 추첨을 통해 상품도 드려요 🎁</p>' +
+        '<ul class="prize-list">' +
+          '<li><span class="rank">1등 (1명)</span> — 호텔 숙박권 또는 뷔페식사권(2인)</li>' +
+          '<li><span class="rank">2등 (2명)</span> — 신세계상품권 10만원</li>' +
+          '<li><span class="rank">3등 (3명)</span> — 회복·컨디셔닝 건강기능식품 세트</li>' +
+        '</ul>' +
+        '<p class="welcome-note">당첨자 발표 7/13(월) 통보 · 발송은 통보 후 1주일 이내</p>' +
         '<button class="primary-btn" id="startBtn">시작하기</button>' +
       '</div>';
     document.getElementById('startBtn').onclick = function(){ step = 1; render(); };
