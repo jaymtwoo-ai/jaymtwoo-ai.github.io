@@ -388,14 +388,6 @@
   var progressFill = document.getElementById('progressFill');
   var wordmark = document.getElementById('wordmark');
 
-  var tapCount = 0, tapTimer = null;
-  wordmark.addEventListener('click', function(){
-    tapCount++;
-    clearTimeout(tapTimer);
-    tapTimer = setTimeout(function(){ tapCount = 0; }, 1800);
-    if (tapCount >= 5) { tapCount = 0; renderAdminGate(); }
-  });
-
   backBtn.addEventListener('click', function(){
     if (step > 0) { step--; render(); }
   });
@@ -614,43 +606,6 @@
   }
 
   render();
-
-  // ---------- Admin ----------
-  var ADMIN_PIN = '0711';
-
-  function renderAdminGate(){
-    root.innerHTML =
-      '<div class="stage center-stage">' +
-        '<div class="eyebrow">관리자</div>' +
-        '<h1>PIN 입력</h1>' +
-        '<div class="field"><input id="pinInput" type="password" inputmode="numeric" placeholder="••••"></div>' +
-        '<div class="error-msg" id="pinErr">PIN이 올바르지 않아요.</div>' +
-        '<button class="primary-btn" id="pinBtn">확인</button>' +
-      '</div>';
-    backBtn.classList.remove('show');
-    progressFill.style.width = '0%';
-    document.getElementById('pinBtn').onclick = checkPin;
-    document.getElementById('pinInput').addEventListener('keydown', function(e){
-      if (e.key === 'Enter') checkPin();
-    });
-    function checkPin(){
-      var v = document.getElementById('pinInput').value;
-      if (v === ADMIN_PIN) { renderAdminPanel(); }
-      else { document.getElementById('pinErr').classList.add('show'); }
-    }
-  }
-
-  function renderAdminPanel(){
-    root.innerHTML =
-      '<div class="admin-wrap">' +
-        '<div class="eyebrow">관리자</div>' +
-        '<h1 style="font-size:19px;margin-bottom:14px;">응답 데이터</h1>' +
-        '<p class="sub" style="margin-bottom:16px;">응답은 <b>Google 시트</b>에 저장됩니다.<br>Drive에서 <b>WXM_나바코리아_설문_2026</b> 을 열어주세요.</p>' +
-        '<button class="primary-btn" onclick="location.reload()">설문으로 돌아가기</button>' +
-      '</div>';
-    backBtn.classList.remove('show');
-    progressFill.style.width = '0%';
-  }
 
 })();
 </script>
