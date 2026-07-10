@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>WXM × 나바코리아 | 웰니스 취향 테스트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+  :root {
+    --deep: #102A24;
+    --green: #1F4037;
+    --cream: #F4F0E8;
+    --card: #FCFAF6;
+    --gold: #C9A978;
+    --gold-soft: #E4D6BE;
+    --muted: #6E7A75;
+    --line: #E4DFD3;
+    --danger: #B5533F;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--cream);
+    color: var(--deep);
+    font-family: 'Pretendard', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .shell {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px 6px;
+  }
+  .wordmark {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: var(--deep);
+    cursor: pointer;
+    user-select: none;
+  }
+  .back-btn {
+    width: 32px; height: 32px;
+    border: none; background: transparent;
+    color: var(--green);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    visibility: hidden;
+  }
+  .back-btn.show { visibility: visible; }
+  .progress-track {
+    height: 3px;
+    background: var(--line);
+    margin: 0 22px 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 28px 24px 40px;
+    animation: rise 0.35s ease;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .eyebrow {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.4;
+    margin: 0 0 8px;
+    color: var(--deep);
+  }
+  .sub {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0 0 26px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    font-size: 15.5px;
+    color: var(--deep);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    text-align: left;
+  }
+  .opt:active { transform: scale(0.98); }
+  .opt.selected {
+    border-color: var(--gold);
+    background: #FBF6EC;
+  }
+  .opt .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    flex-shrink: 0;
+  }
+  .opt.selected .dot { background: var(--gold); border-color: var(--gold); }
+
+  .field {
+    margin-bottom: 16px;
+  }
+  .field label {
+    display: block;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font-size: 15.5px;
+    font-family: 'Pretendard', sans-serif;
+    background: var(--card);
+    color: var(--deep);
+    outline: none;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--gold); }
+
+  .consent-box {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .consent-box b { color: var(--deep); }
+
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .check-row input { margin-top: 2px; width: 18px; height: 18px; accent-color: var(--gold); flex-shrink: 0; }
+  .check-row span { font-size: 14px; line-height: 1.5; color: var(--deep); }
+  .check-row .req { color: var(--gold); font-weight: 600; }
+
+  .primary-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--deep);
+    color: var(--cream);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.15s;
+  }
+  .primary-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .primary-btn:active:not(:disabled) { opacity: 0.85; }
+
+  .error-msg {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: -6px;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .error-msg.show { display: block; }
+
+  .welcome-badge {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: 16px;
+    background: linear-gradient(155deg, var(--deep), var(--green));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--cream);
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .welcome-badge::before {
+    content: '';
+    position: absolute;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,169,120,0.35);
+    top: -60px; right: -80px;
+  }
+  .welcome-badge::after {
+    content: '';
+    position: absolute;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,169,120,0.25);
+    bottom: -70px; left: -60px;
+  }
+  .welcome-word {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 30px;
+    z-index: 1;
+  }
+  .welcome-tag {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--gold-soft);
+    margin-top: 8px;
+    z-index: 1;
+  }
+
+  .center-stage {
+    text-align: center;
+    align-items: center;
+  }
+  .center-stage .opt-input {
+    margin-top: 14px;
+  }
+
+  .done-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--deep);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 28px;
+    margin: 0 auto 20px;
+  }
+
+  .footer-link {
+    text-align: center;
+    font-size: 11px;
+    color: var(--line);
+    padding: 10px 0 18px;
+  }
+
+  /* Admin */
+  .admin-wrap { padding: 20px; }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+    background: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .admin-table th, .admin-table td {
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .admin-table th { background: var(--deep); color: var(--cream); position: sticky; top: 0; }
+  .admin-scroll { overflow: auto; max-height: 60vh; border-radius: 10px; }
+  .admin-actions { display: flex; gap: 10px; margin-bottom: 14px; }
+  .admin-actions button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-export { background: var(--gold); color: var(--deep); }
+  .btn-refresh { background: var(--card); color: var(--deep); border: 1.5px solid var(--line) !important; }
+  .admin-count { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="shell" id="shell">
+  <div class="topbar">
+    <button class="back-btn" id="backBtn" aria-label="뒤로">←</button>
+    <div class="wordmark" id="wordmark">WXM</div>
+    <div style="width:32px"></div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div id="stageRoot"></div>
+</div>
+
+<script>
+(function(){
+
+  // ★ 웹앱 배포 후 URL 붙여넣기 (배포 → 웹 앱 → .../exec)
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzac-ouAYf6a5SC5AKY-NqhFYu5MZJQw1yg7SWBA9jK18IXF5wnL-RBR3rNIVh3ejvO2A/exec';
+
+  // ---------- Data model ----------
+  var questions = [
+    { id:'q5', title:'몸이 무겁고 뻐근할 때, 나는?', options:[
+      '냉·온 요법(콜드플런지·사우나 등)','폼롤러·마사지건(셀프 마사지)','스트레칭·가벼운 움직임','마사지샵·전문관리 받기','기타'
+    ]},
+    { id:'q6', title:'평소 관심 가는 셀프케어 아이템은?', options:[
+      '이너뷰티·영양제','마사지·지압 도구(괄사·마사지볼·허브볼 등)','수면케어 아이템','웨어러블 헬스디바이스','기타'
+    ]},
+    { id:'q7', title:'회복·휴식 공간에서 선호하는 향은?', options:[
+      '시트러스(상쾌·활력)','라벤더·플로럴(진정·이완)','우디·머스크(차분·묵직)','허브·민트(그린·시원함)','기타'
+    ]},
+    { id:'q8', title:'이런 아이템 하나 살 때, 아깝지 않은 가격은?', options:[
+      '1만원 이하','1만~2만원','2만~3만원','3만~5만원','5만원 이상'
+    ]},
+    { id:'q9', title:'평소 선호하는 운동 방식은?', options:[
+      '실내·혼자(헬스장·홈트)','실내·1:1 PT','소그룹 클래스(필라테스·요가 등)','아웃도어·커뮤니티(러닝크루 등)','기타'
+    ]},
+    { id:'q10', title:'내 몸을 관리한다면, 가장 중요하게 생각하는 건?', options:[
+      '신체나이','체형·자세','통증·부상 관리','근육량·체지방률','수면·스트레스 관리','기타'
+    ]},
+    { id:'q11', title:'웰니스 소식, 어떤 방법으로 받는 게 편하세요?', options:[
+      '카카오톡','문자(SMS)','이메일','인스타그램·SNS DM','안 받아도 됨'
+    ]},
+    { id:'q12', title:'오늘 방문 계기는?', options:[
+      '선수 본인','선수 가족·지인','코치·트레이너','보디빌딩·피트니스 대회 관람, NABBA가 좋아서','기타'
+    ]}
+  ];
+
+  // flow: welcome(0), signup(1), consent(2), q5..q12 (3..10), marketing(11), done(12)
+  var TOTAL_STEPS = 3 + questions.length + 2; // for progress calc
+  var step = 0;
+  var answers = { name:'', phone:'', email:'', consent:false, marketing:false };
+  questions.forEach(function(q){ answers[q.id] = ''; answers[q.id+'_etc'] = ''; });
+
+  var root = document.getElementById('stageRoot');
+  var backBtn = document.getElementById('backBtn');
+  var progressFill = document.getElementById('progressFill');
+  var wordmark = document.getElementById('wordmark');
+
+  var tapCount = 0, tapTimer = null;
+  wordmark.addEventListener('click', function(){
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(function(){ tapCount = 0; }, 1800);
+    if (tapCount >= 5) { tapCount = 0; renderAdminGate(); }
+  });
+
+  backBtn.addEventListener('click', function(){
+    if (step > 0) { step--; render(); }
+  });
+
+  function updateProgress(){
+    var idx = step; // 0-based
+    var pct = Math.min(100, Math.round((idx / (TOTAL_STEPS-1)) * 100));
+    progressFill.style.width = pct + '%';
+    backBtn.classList.toggle('show', step > 0 && step < TOTAL_STEPS-1);
+  }
+
+  function esc(s){
+    var d = document.createElement('div');
+    d.innerText = s == null ? '' : s;
+    return d.innerHTML;
+  }
+
+  function render(){
+    updateProgress();
+    if (step === 0) return renderWelcome();
+    if (step === 1) return renderSignup();
+    if (step === 2) return renderConsent();
+    var qIdx = step - 3;
+    if (qIdx >= 0 && qIdx < questions.length) return renderQuestion(questions[qIdx]);
+    if (step === 3 + questions.length) return renderMarketing();
+    if (step === 3 + questions.length + 1) return renderDone();
+  }
+
+  function renderWelcome(){
+    root.innerHTML =
+      '<div class="stage center-stage">' +
+        '<div class="welcome-badge">' +
+          '<div class="welcome-word">WXM</div>' +
+          '<div class="welcome-tag">We Design Wellness × Mechanism</div>' +
+        '</div>' +
+        '<div class="eyebrow">나바코리아 2026 · 부산</div>' +
+        '<h1>나의 웰니스 취향은?</h1>' +
+        '<p class="sub">3분이면 끝나요. 답변해주시면 추첨을 통해<br>상품을 드려요 🎁</p>' +
+        '<button class="primary-btn" id="startBtn">시작하기</button>' +
+      '</div>';
+    document.getElementById('startBtn').onclick = function(){ step = 1; render(); };
+  }
+
+  function renderSignup(){
+    root.innerHTML =
+      '<div class="stage">' +
+        '<div class="eyebrow">회원가입</div>' +
+        '<h1>몇 가지만 알려주세요</h1>' +
+        '<p class="sub">추첨 및 이벤트 안내에 사용돼요.</p>' +
+        '<div class="field"><label>성명</label><input id="fName" type="text" value="'+esc(answers.name)+'" placeholder="홍길동"></div>' +
+        '<div class="field"><label>휴대폰번호</label><input id="fPhone" type="tel" value="'+esc(answers.phone)+'" placeholder="010-0000-0000"></div>' +
+        '<div class="field"><label>이메일</label><input id="fEmail" type="email" value="'+esc(answers.email)+'" placeholder="example@email.com"></div>' +
+        '<div class="error-msg" id="signupErr">모든 항목을 정확히 입력해주세요.</div>' +
+        '<button class="primary-btn" id="nextBtn">다음</button>' +
+      '</div>';
+    document.getElementById('nextBtn').onclick = function(){
+      var name = document.getElementById('fName').value.trim();
+      var phone = document.getElementById('fPhone').value.trim();
+      var email = document.getElementById('fEmail').value.trim();
+      var phoneOk = /^[0-9\-]{9,14}$/.test(phone);
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!name || !phoneOk || !emailOk) {
+        document.getElementById('signupErr').classList.add('show');
+        return;
+      }
+      answers.name = name; answers.phone = phone; answers.email = email;
+      step = 2; render();
+    };
+  }
+
+  function renderConsent(){
+    root.innerHTML =
+      '<div class="stage">' +
+        '<div class="eyebrow">개인정보 동의</div>' +
+        '<h1>수집 안내</h1>' +
+        '<div class="consent-box">' +
+          '<b>수집 목적</b> · 회원가입, 경품 추첨, 이벤트 안내<br>' +
+          '<b>수집 항목</b> · 성명, 연락처, 이메일<br>' +
+          '<b>보유 기간</b> · 수집일로부터 1년' +
+        '</div>' +
+        '<label class="check-row"><input type="checkbox" id="cAgree" '+(answers.consent?'checked':'')+'><span><span class="req">[필수]</span> 개인정보 수집·이용에 동의합니다</span></label>' +
+        '<div class="error-msg" id="consentErr">동의가 필요해요.</div>' +
+        '<button class="primary-btn" id="nextBtn">다음</button>' +
+      '</div>';
+    document.getElementById('nextBtn').onclick = function(){
+      var checked = document.getElementById('cAgree').checked;
+      if (!checked) { document.getElementById('consentErr').classList.add('show'); return; }
+      answers.consent = true;
+      step = 3; render();
+    };
+  }
+
+  function renderQuestion(q){
+    var selected = answers[q.id];
+    var html = '<div class="stage">' +
+      '<div class="eyebrow">'+ (step-2) +' / '+ questions.length +'</div>' +
+      '<h1>'+esc(q.title)+'</h1>' +
+      '<div class="options">';
+    q.options.forEach(function(opt){
+      var isSel = selected === opt;
+      html += '<button type="button" class="opt'+(isSel?' selected':'')+'" data-val="'+esc(opt)+'"><span class="dot"></span>'+esc(opt)+'</button>';
+    });
+    html += '</div>';
+    if (selected === '기타') {
+      html += '<div class="field opt-input"><input id="etcInput" type="text" placeholder="직접 입력해주세요 (선택)" value="'+esc(answers[q.id+'_etc'])+'"></div>';
+      html += '<button type="button" class="primary-btn" id="etcNextBtn">다음</button>';
+    }
+    html += '</div>';
+    root.innerHTML = html;
+
+    var opts = root.querySelectorAll('.opt');
+    opts.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var val = btn.getAttribute('data-val');
+        answers[q.id] = val;
+        if (val === '기타') {
+          renderQuestion(q);
+          setTimeout(function(){
+            var inp = document.getElementById('etcInput');
+            if (inp) inp.focus();
+          }, 50);
+        } else {
+          setTimeout(function(){ step++; render(); }, 180);
+        }
+      });
+    });
+    var etcInput = document.getElementById('etcInput');
+    if (etcInput) {
+      etcInput.addEventListener('input', function(){ answers[q.id+'_etc'] = etcInput.value; });
+      etcInput.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') { step++; render(); }
+      });
+    }
+    var etcNextBtn = document.getElementById('etcNextBtn');
+    if (etcNextBtn) {
+      etcNextBtn.addEventListener('click', function(){ step++; render(); });
+    }
+  }
+
+  function renderMarketing(){
+    root.innerHTML =
+      '<div class="stage">' +
+        '<div class="eyebrow">거의 다 됐어요</div>' +
+        '<h1>WXM 소식 받아보기</h1>' +
+        '<p class="sub">답변 기반으로 맞춤 소식을 보내드려요. 선택사항이에요.</p>' +
+        '<label class="check-row"><input type="checkbox" id="mAgree" '+(answers.marketing?'checked':'')+'><span>[선택] WXM 소식·프로그램 안내 받아보기</span></label>' +
+        '<button class="primary-btn" id="submitBtn">제출하기</button>' +
+      '</div>';
+    document.getElementById('submitBtn').onclick = function(){
+      answers.marketing = document.getElementById('mAgree').checked;
+      submit();
+    };
+  }
+
+  function submit(){
+    var btn = document.getElementById('submitBtn');
+    if (btn) { btn.disabled = true; btn.innerText = '제출 중...'; }
+    if (!API_URL || API_URL.indexOf('PASTE_WEB_APP') === 0) {
+      if (btn) { btn.disabled = false; btn.innerText = '제출하기'; }
+      alert('설문 서버 URL이 아직 연결되지 않았어요.');
+      return;
+    }
+    var record = {};
+    for (var k in answers) record[k] = answers[k];
+    record.consent = true;
+    record.submittedAt = new Date().toISOString();
+
+    fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(record)
+    }).then(function(){
+      step = 3 + questions.length + 1;
+      render();
+    }).catch(function(err){
+      console.error('Submit error', err);
+      if (btn) { btn.disabled = false; btn.innerText = '다시 시도'; }
+      alertInline('저장에 실패했어요. 다시 시도해주세요.');
+    });
+  }
+
+  function alertInline(msg){
+    var e = document.createElement('div');
+    e.className = 'error-msg show';
+    e.innerText = msg;
+    root.querySelector('.stage').appendChild(e);
+  }
+
+  function renderDone(){
+    root.innerHTML =
+      '<div class="stage center-stage">' +
+        '<div class="done-icon">✓</div>' +
+        '<h1>감사해요, '+esc(answers.name)+'님!</h1>' +
+        '<p class="sub">답변이 잘 접수됐어요.<br>추첨 결과는 개별 안내드릴게요.</p>' +
+      '</div>';
+    progressFill.style.width = '100%';
+    backBtn.classList.remove('show');
+  }
+
+  render();
+
+  // ---------- Admin ----------
+  var ADMIN_PIN = '0711';
+
+  function renderAdminGate(){
+    root.innerHTML =
+      '<div class="stage center-stage">' +
+        '<div class="eyebrow">관리자</div>' +
+        '<h1>PIN 입력</h1>' +
+        '<div class="field"><input id="pinInput" type="password" inputmode="numeric" placeholder="••••"></div>' +
+        '<div class="error-msg" id="pinErr">PIN이 올바르지 않아요.</div>' +
+        '<button class="primary-btn" id="pinBtn">확인</button>' +
+      '</div>';
+    backBtn.classList.remove('show');
+    progressFill.style.width = '0%';
+    document.getElementById('pinBtn').onclick = checkPin;
+    document.getElementById('pinInput').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') checkPin();
+    });
+    function checkPin(){
+      var v = document.getElementById('pinInput').value;
+      if (v === ADMIN_PIN) { renderAdminPanel(); }
+      else { document.getElementById('pinErr').classList.add('show'); }
+    }
+  }
+
+  function renderAdminPanel(){
+    root.innerHTML =
+      '<div class="admin-wrap">' +
+        '<div class="eyebrow">관리자</div>' +
+        '<h1 style="font-size:19px;margin-bottom:14px;">응답 데이터</h1>' +
+        '<p class="sub" style="margin-bottom:16px;">응답은 <b>Google 시트</b>에 저장됩니다.<br>Drive에서 <b>WXM_나바코리아_설문_2026</b> 을 열어주세요.</p>' +
+        '<button class="primary-btn" onclick="location.reload()">설문으로 돌아가기</button>' +
+      '</div>';
+    backBtn.classList.remove('show');
+    progressFill.style.width = '0%';
+  }
+
+})();
+</script>
+</body>
+</html>
